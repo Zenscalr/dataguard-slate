@@ -3,13 +3,10 @@ title: API Reference
 
 language_tabs: # must be one of https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers
   - shell
-  - ruby
-  - python
   - javascript
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
 
 includes:
   - errors
@@ -20,85 +17,72 @@ code_clipboard: true
 
 meta:
   - name: description
-    content: Documentation for the Kittn API
+    content: Documentation for the DataGuard API
 ---
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the DataGuard API! You can use our API to access DataGuard API endpoints, which allows programmatic access to the DataGuard Secure LLM Systems.
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
+We have language bindings in Shell, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
 # Authentication
 
 > To authorize, use this code:
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
 ```shell
 # With shell, you can just pass the correct header with each request
 curl "api_endpoint_here" \
-  -H "Authorization: meowmeowmeow"
+  -H "Authorization: api_key"
 ```
 
 ```javascript
-const kittn = require('kittn');
+const dataguard = require("dataguard");
 
-let api = kittn.authorize('meowmeowmeow');
+let api = dataguard.authorize("api_key");
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+> Make sure to replace `api_key` with your API key.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+DataGuard uses API keys to allow access to the API. You can register a new DataGuard API key at our [developer portal](http://example.com/developers).
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+DataGuard expects for the API key to be included in all API requests to the server in a header that looks like the following:
 
-`Authorization: meowmeowmeow`
+`Authorization: api_key`
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>api_key</code> with your personal API key.
 </aside>
 
-# Kittens
+# Chat
 
-## Get All Kittens
+## The Chat Session object
 
-```ruby
-require 'kittn'
+| Attribute      | Type           | Description                                                             | Readonly |
+| -------------- | -------------- | ----------------------------------------------------------------------- | -------- |
+| **id**         | UUID           | The unique identifier for the chat session                              | Yes      |
+| **user_id**    | UUID           | The unique identifier for the user involved in the chat session         | Yes      |
+| **messages**   | Array          | An array of message objects associated with the chat session            | No       |
+| **method**     | `api` or `web` | The method through which the chat session was initiated                 | Yes      |
+| **engine**     | String         | The LLM engine used in the chat session                                 | Yes      |
+| **status**     | String         | The status of the chat session (active, closed, suspended, etc.)        | No       |
+| **start_time** | String         | The start time of the chat session                                      | Yes      |
+| **end_time**   | String         | The end time of the chat session (null if the session is still ongoing) | No       |
+| **created_at** | String         | The date and time when the chat session was created                     | Yes      |
+| **updated_at** | String         | The date and time when the chat session was last updated                | Yes      |
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
+## Get all chat sessions
 
 ```shell
-curl "http://example.com/api/kittens" \
-  -H "Authorization: meowmeowmeow"
+curl "http://example.com/api/chat" \
+  -H "Authorization: api_key"
 ```
 
 ```javascript
-const kittn = require('kittn');
+const dataguard = require("dataguard");
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+let api = dataguard.authorize("api_key");
+let chats = api.chats.get();
 ```
 
 > The above command returns JSON structured like this:
@@ -130,41 +114,23 @@ This endpoint retrieves all kittens.
 
 ### Query Parameters
 
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+| Parameter    | Default | Description                                                                      |
+| ------------ | ------- | -------------------------------------------------------------------------------- |
+| include_cats | false   | If set to true, the result will also include cats.                               |
+| available    | true    | If set to false, the result will include kittens that have already been adopted. |
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
+## Get a Specific Chat Session
 
 ```shell
-curl "http://example.com/api/kittens/2" \
-  -H "Authorization: meowmeowmeow"
+curl "http://example.com/api/chat/2" \
+  -H "Authorization: api_key"
 ```
 
 ```javascript
-const kittn = require('kittn');
+const dataguard = require("dataguard");
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
+let api = dataguard.authorize("api_key");
+let chats = api.chats.get(2);
 ```
 
 > The above command returns JSON structured like this:
@@ -179,47 +145,31 @@ let max = api.kittens.get(2);
 }
 ```
 
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+This endpoint retrieves a specific chat session.
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+`GET http://example.com/api/chat/<ID>`
 
 ### URL Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+| Parameter | Description                            |
+| --------- | -------------------------------------- |
+| ID        | The ID of the chat session to retrieve |
 
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
+## Delete a Specific Chat Session
 
 ```shell
-curl "http://example.com/api/kittens/2" \
+curl "http://example.com/api/chat/2" \
   -X DELETE \
-  -H "Authorization: meowmeowmeow"
+  -H "Authorization: api_key"
 ```
 
 ```javascript
-const kittn = require('kittn');
+const dataguard = require("dataguard");
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
+let api = dataguard.authorize("api_key");
+let chats = api.chats.delete(2);
 ```
 
 > The above command returns JSON structured like this:
@@ -227,19 +177,18 @@ let max = api.kittens.delete(2);
 ```json
 {
   "id": 2,
-  "deleted" : ":("
+  "deleted": ":("
 }
 ```
 
-This endpoint deletes a specific kitten.
+This endpoint deletes a specific chat session.
 
 ### HTTP Request
 
-`DELETE http://example.com/kittens/<ID>`
+`DELETE http://example.com/api/chat/<ID>`
 
 ### URL Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
-
+| Parameter | Description                          |
+| --------- | ------------------------------------ |
+| ID        | The ID of the chat session to delete |
